@@ -14,7 +14,7 @@ export default function UpdateModal({
   onClose,
 }: UpdateModalProps) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center z-50 text-black">
       <div className="bg-white p-6 rounded shadow w-[400px]">
         <h2 className="text-xl font-semibold mb-4">Update Inventory</h2>
         <input

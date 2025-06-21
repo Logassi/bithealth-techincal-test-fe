@@ -7,10 +7,26 @@ import DashboardHeader from "./components/dashboard-header.component";
 import InventoryTable from "./components/inventory-table.component";
 import AddModal from "./components/add-modal.component";
 import UpdateModal from "./components/update-modal.component";
+import Pagination from "./components/pagination.component";
+import { getCookie } from "cookies-next";
+import { jwtDecode } from "jwt-decode";
+import Swal from "sweetalert2";
+
+interface MyJwtPayload {
+  id: string;
+  email: string;
+  role_id: "admin" | "staff" | null;
+  name: string;
+  iat?: number;
+  exp?: number;
+}
 
 export default function DashboardView() {
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [data, setData] = useState<IGoods[]>([]);
   const [search, setSearch] = useState("");
+  const [role, setRole] = useState<"admin" | "staff" | null>(null);
   const [currentItem, setCurrentItem] = useState<IGoods | null>(null);
 
   const [formData, setFormData] = useState({
@@ -29,10 +45,12 @@ export default function DashboardView() {
 
   const handleGetData = async () => {
     try {
-      const { data } = await axiosInstance.get("/v1/inventory/get-inventory", {
-        params: { search },
+      const res = await axiosInstance.get("/v1/inventory/get-inventory", {
+        params: { search, page },
       });
-      setData(data.data);
+
+      setData(res.data.data);
+      setTotalPages(res.data.meta.totalPages);
     } catch (error) {
       ErrorHandler(error);
     }
@@ -40,10 +58,7 @@ export default function DashboardView() {
 
   const handleAdd = async () => {
     try {
-      const response = await axiosInstance.post(
-        "/v1/inventory/add-goods",
-        formData
-      );
+      await axiosInstance.post("/v1/inventory/add-goods", formData);
       setShowAddModal(false);
       setFormData({ goods_name: "", goods_quantity: 0 });
       await handleGetData();
@@ -70,13 +85,56 @@ export default function DashboardView() {
     item.goods_name.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleDelete = async (id: string) => {
+    const confirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: "This item will be permanently deleted.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirmed.isConfirmed) {
+      try {
+        await axiosInstance.delete(`/v1/inventory/delete-goods/${id}`);
+        Swal.fire("Deleted!", "The item has been deleted.", "success");
+        await handleGetData(); // refresh table
+      } catch (err) {
+        ErrorHandler(err);
+      }
+    }
+  };
+
   useEffect(() => {
+    const token = getCookie("access_token")?.toString();
+
+    if (token) {
+      try {
+        const decoded = jwtDecode<MyJwtPayload>(token);
+
+        // console.log("Decoded JWT:", decoded);
+
+        // const roleValue =
+        //   decoded.role_id === 1
+        //     ? "admin"
+        //     : decoded.role_id === 2
+        //     ? "staff"
+        //     : null;
+        setRole(decoded.role_id);
+      } catch (err) {
+        console.error("Invalid token", err);
+        setRole(null);
+      }
+    }
+
     const delayDebounce = setTimeout(() => {
       handleGetData();
     }, 500);
 
     return () => clearTimeout(delayDebounce);
-  }, [search]);
+  }, [search, page]);
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -87,6 +145,7 @@ export default function DashboardView() {
       />
       <InventoryTable
         data={filteredData}
+        role={role}
         onUpdateClick={(item) => {
           setCurrentItem(item);
           setFormUpdateData({
@@ -96,6 +155,7 @@ export default function DashboardView() {
           });
           setShowUpdateModal(true);
         }}
+        onDeleteClick={handleDelete}
       />
       {showAddModal && (
         <AddModal
@@ -129,6 +189,11 @@ export default function DashboardView() {
           onClose={() => setShowUpdateModal(false)}
         />
       )}
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPageChange={(newPage) => setPage(newPage)}
+      />
     </div>
   );
 }

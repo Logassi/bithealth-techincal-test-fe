@@ -1,5 +1,5 @@
 export interface IGoods {
-  id: number;
+  id: string;
   goods_name: string;
   goods_quantity: number;
   // price: number;

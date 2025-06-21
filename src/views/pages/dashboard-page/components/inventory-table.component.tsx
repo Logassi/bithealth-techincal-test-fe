@@ -1,11 +1,18 @@
 import { IGoods } from "../types";
 
 interface Props {
+  role: "admin" | "staff" | null;
   data: IGoods[];
   onUpdateClick: (item: IGoods) => void;
+  onDeleteClick?: (itemId: string) => void;
 }
 
-export default function InventoryTable({ data, onUpdateClick }: Props) {
+export default function InventoryTable({
+  data,
+  role,
+  onUpdateClick,
+  onDeleteClick,
+}: Props) {
   return (
     <table className="w-full border border-gray-300 text-black">
       <thead className="bg-gray-100">
@@ -35,13 +42,24 @@ export default function InventoryTable({ data, onUpdateClick }: Props) {
                   ? new Date(item.updated_at).toLocaleString()
                   : "-"}
               </td>
-              <td className="border px-4 py-2">
-                <button
-                  onClick={() => onUpdateClick(item)}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded"
-                >
-                  Update
-                </button>
+              <td className="border px-4 py-2 text-center">
+                <div className="flex justify-center gap-2">
+                  <button
+                    onClick={() => onUpdateClick(item)}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition"
+                  >
+                    Update
+                  </button>
+
+                  {role === "admin" && (
+                    <button
+                      onClick={() => onDeleteClick?.(item.id)}
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </td>
             </tr>
           ))
