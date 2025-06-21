@@ -3,6 +3,7 @@ export interface IGoods {
   goods_name: string;
   goods_quantity: number;
   // price: number;
+  action?: "incoming" | "outgoing";
   created_at?: Date;
   updated_at?: Date;
   created_by?: number; // User ID
