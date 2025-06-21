@@ -1,5 +1,6 @@
 export default interface IRegister {
+  name: string;
   email: string;
-  userName: string;
   password: string;
+  role_id: number;
 }

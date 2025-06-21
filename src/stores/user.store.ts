@@ -4,7 +4,8 @@ import { deleteCookie } from "cookies-next";
 export interface IUser {
   id: number;
   email: string;
-  userName: string;
+  name: string;
+  role_id: number;
 }
 
 interface IUserStore {

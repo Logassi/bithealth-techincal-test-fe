@@ -14,7 +14,7 @@ export default function RegisterForm() {
 
   const handleRegister = async (params: IRegister) => {
     try {
-      const response = await axiosInstance.post("/api/register", params);
+      const response = await axiosInstance.post("/v1/user/register", params);
 
       Swal.fire({
         icon: "success",
@@ -49,15 +49,31 @@ export default function RegisterForm() {
 
       <Formik
         initialValues={{
+          name: "",
           email: "",
-          userName: "",
           password: "",
+          role_id: 0,
         }}
         validationSchema={RegisterSchema}
         onSubmit={handleRegister}
       >
         {({ isSubmitting }) => (
           <Form className="w-full max-w-md">
+            {/* Name Field */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2">Name</label>
+              <Field
+                type="text"
+                name="name"
+                className="w-full px-4 py-2 text-black rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              />
+              <ErrorMessage
+                name="name"
+                component="div"
+                className="text-red-400 text-sm mt-1"
+              />
+            </div>
+
             {/* Email Field */}
             <div className="mb-6">
               <label className="block text-sm font-medium mb-2">Email</label>
@@ -73,23 +89,6 @@ export default function RegisterForm() {
               />
             </div>
 
-            {/* User Name Field */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium mb-2">
-                User Name
-              </label>
-              <Field
-                type="text"
-                name="userName"
-                className="w-full px-4 py-2 text-black rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
-              />
-              <ErrorMessage
-                name="userName"
-                component="div"
-                className="text-red-400 text-sm mt-1"
-              />
-            </div>
-
             {/* Password Field */}
             <div className="mb-6">
               <label className="block text-sm font-medium mb-2">Password</label>
@@ -100,6 +99,25 @@ export default function RegisterForm() {
               />
               <ErrorMessage
                 name="password"
+                component="div"
+                className="text-red-400 text-sm mt-1"
+              />
+            </div>
+
+            {/* Role Field */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2">Role</label>
+              <Field
+                as="select"
+                name="role_id"
+                className="w-full px-4 py-2 text-black rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              >
+                <option value="">Select a role</option>
+                <option value="1">Admin</option>
+                <option value="2">Staff</option>
+              </Field>
+              <ErrorMessage
+                name="role_id"
                 component="div"
                 className="text-red-400 text-sm mt-1"
               />

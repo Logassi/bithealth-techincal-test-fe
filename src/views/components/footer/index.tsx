@@ -3,8 +3,8 @@ export default function Footer() {
     <footer className="bg-gray-800 text-white py-4">
       <div className="container mx-auto text-center">
         <p className="text-sm">
-          &copy; {new Date().getFullYear()} Your Company Name. All rights
-          reserved.
+          &copy; {new Date().getFullYear()} Inventory Management System. All
+          rights reserved.
         </p>
         <p className="text-xs mt-2">
           Built with ❤️ using Next.js and Tailwind CSS.

@@ -17,7 +17,7 @@ export default function LoginForm() {
 
   const handleLogin = async (params: ILogin) => {
     try {
-      const { data } = await axiosInstance.post("/api/login", params);
+      const { data } = await axiosInstance.post("/v1/user/login", params);
 
       // console.log(data);
       // const access_token = (getCookie("access_token") as string) || "";
@@ -40,7 +40,7 @@ export default function LoginForm() {
         Swal.fire({
           icon: "success",
           title: "Login Successful!",
-          text: "You may take quizzes or create quizzes",
+          text: "You may now access your dashboard.",
           showConfirmButton: false,
           timer: 3000,
         }).then(() => {
@@ -66,7 +66,7 @@ export default function LoginForm() {
       {/* Form Header */}
       <h2 className="text-2xl font-semibold mb-4">Welcome Back</h2>
       <p className="mb-8 text-gray-200">
-        Good to see you again! Log in to unlock your next adventure!
+        Good to see you again! Log in to access your account.
       </p>
 
       <Formik
