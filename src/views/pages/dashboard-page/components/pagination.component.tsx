@@ -12,6 +12,13 @@ export default function Pagination({
   return (
     <div className="flex justify-center mt-4 space-x-2 text-black">
       <button
+        onClick={() => onPageChange(1)}
+        disabled={page === 1}
+        className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+      >
+        First
+      </button>
+      <button
         onClick={() => onPageChange(Math.max(1, page - 1))}
         disabled={page === 1}
         className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
@@ -27,6 +34,13 @@ export default function Pagination({
         className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
       >
         Next
+      </button>
+      <button
+        onClick={() => onPageChange(totalPages)}
+        disabled={page === totalPages}
+        className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+      >
+        Last
       </button>
     </div>
   );
